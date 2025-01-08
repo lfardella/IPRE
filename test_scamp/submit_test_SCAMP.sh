@@ -13,10 +13,10 @@
 #SBATCH --cpus-per-task=32
 # Solicitud de GPUS
 ##SBATCH --gres=gpu:1
-#SBATCH --mail-user=leoncio.cabrera@uc.cl
+#SBATCH --mail-user=lfardella@uc.cl
 #SBATCH --mail-type=ALL
 
 eval "$(conda shell.bash hook)"
-conda activate SCAMP
+conda activate scamp_env
 
 python SCAMP_1day.py
