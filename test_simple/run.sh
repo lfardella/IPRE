@@ -10,7 +10,7 @@
 #SBATCH --gres=gpu:quadro_rtx_8000:1
 # Reporte por correo
 #SBATCH --mail-type=ALL
-#SBATCH --mail-user=lfardella@ing.puc.cl
+#SBATCH --mail-user=lfardella@uc.cl
 
 module load cuda/12.6
 
