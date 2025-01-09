@@ -12,7 +12,7 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=lfardella@ing.puc.cl
 
-module load cuda/11.2
+module load cuda/12.6
 
 eval "$(conda shell.bash hook)"
 conda activate scamp_env 
