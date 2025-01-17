@@ -18,8 +18,8 @@ cc_suma = np.load('cc_suma.npy')
 time_signal = np.arange(0, len(signal)) / sampling_rate / 3600 / 24  # Señal completa en días
 time_profile = np.arange(0, len(profile)) / sampling_rate / 3600 / 24  # Perfiles e índices en días
 
-# Convertir los índices filtrados a tiempo en días con un umbral de 0.95
-filter_mask = profile > 0.95
+# Convertir los índices filtrados a tiempo en días con un umbral de 0.9
+filter_mask = profile > 0.9
 filtered_indices = index[filter_mask]
 filtered_time_profile = time_profile[filter_mask]
 filtered_time_indices = filtered_indices / sampling_rate / 3600 / 24  # Convertir índices a tiempo en días
@@ -43,7 +43,7 @@ axes[0].set_ylabel("Amplitud")
 
 # Gráfico 2: Perfil de correlación
 axes[1].plot(time_profile, profile, color='blue', linewidth=0.8)
-axes[1].axhline(y=0.95, color='red', linestyle='--', linewidth=1, label="Umbral 0.95")
+axes[1].axhline(y=0.9, color='red', linestyle='--', linewidth=1, label="Umbral 0.9")
 axes[1].set_title("Matrix Profile", fontsize=12)
 axes[1].set_ylabel("Correlación")
 axes[1].legend()
