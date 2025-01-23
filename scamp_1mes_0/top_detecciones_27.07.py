@@ -65,6 +65,9 @@ segment_duration = pre_duration + post_duration     # Duración total en segundo
 segment_samples = int(segment_duration * sampling_rate)
 pre_samples = int(pre_duration * sampling_rate)
 
+# Desplazamientos en segundos para las detecciones relacionadas
+time_offsets = [7.1, 7.55, 7.65, 7.7, -7.5]  # Ejemplo: tiempo de desplazamiento para las primeras detecciones
+
 # Crear la figura y los subgráficos
 num_subplots = len(related_times) + 1  # Uno para la muestra original + cada secuencia relacionada
 fig, axes = plt.subplots(num_subplots, 1, figsize=(10, 2 * num_subplots), sharex=False)
@@ -86,10 +89,14 @@ axes[0].plot(relative_time, main_signal, color='black', linewidth=0.8)
 axes[0].set_title(f"Muestra original: {start_datetime + timedelta(seconds=main_start_sample / sampling_rate)}")
 axes[0].set_ylabel("Amplitud")
 
-# Graficar las secuencias relacionadas
+# Graficar las secuencias relacionadas con desplazamiento de tiempo
 for i, correlated_time in enumerate(related_times):
     # Convertir tiempo relacionado a UTCDateTime
     correlated_time_utc = UTCDateTime(correlated_time)
+    
+    # Aplicar desplazamiento si está dentro del rango definido
+    if i < len(time_offsets):
+        correlated_time_utc += time_offsets[i]  # Agregar desplazamiento de tiempo
     
     # Convertir tiempo a índice
     correlated_index = int((correlated_time_utc - start_time) * sampling_rate)
@@ -110,7 +117,7 @@ for i, correlated_time in enumerate(related_times):
     
     # Graficar
     axes[i + 1].plot(relative_time, segment_signal, color='blue', linewidth=0.8)
-    axes[i + 1].set_title(f"Relacionado: {correlated_time.strftime('%Y-%m-%d %H:%M:%S')}")
+    axes[i + 1].set_title(f"Relacionado (desplazado): {correlated_time_utc.datetime.strftime('%Y-%m-%d %H:%M:%S')}")
     axes[i + 1].set_ylabel("Amplitud")
 
 # Ajustar ejes y etiquetas
@@ -118,7 +125,7 @@ axes[-1].set_xlabel("Tiempo relativo (s)")
 plt.tight_layout()
 
 # Guardar la figura como imagen PNG
-plt.savefig("top_detecciones_27.07.png", format='png', dpi=300)
+plt.savefig("top_detecciones_27.07_desplazadas.png", format='png', dpi=300)
 
 # Mostrar la figura
 plt.show()
