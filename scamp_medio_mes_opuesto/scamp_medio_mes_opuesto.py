@@ -2,7 +2,7 @@ from obspy import read
 import pyscamp as mp
 import numpy as np
 
-Data   = read('C1.MT12.HH*.2017.182-212.0merge.mseed')
+Data   = read('C1.MT12.HH*.2017.197-212.0merge.mseed')
 SR     = Data[0].stats.sampling_rate 
 sublen = int(11*SR)
 
