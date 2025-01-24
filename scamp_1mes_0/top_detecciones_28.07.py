@@ -66,7 +66,7 @@ segment_samples = int(segment_duration * sampling_rate)
 pre_samples = int(pre_duration * sampling_rate)
 
 # Desplazamiento en segundos para todas las detecciones relacionadas
-time_offset = 7.8  # Corrección de 7.7 segundos
+time_offset = 7.8
 
 # Crear la figura y los subgráficos
 num_subplots = len(related_times) + 1  # Uno para la muestra original + cada secuencia relacionada
@@ -113,7 +113,7 @@ for i, correlated_time in enumerate(related_times):
     
     # Graficar
     axes[i + 1].plot(relative_time, segment_signal, color='blue', linewidth=0.8)
-    axes[i + 1].set_title(f"Relacionado (desplazado): {correlated_time_utc.datetime.strftime('%Y-%m-%d %H:%M:%S')}")
+    axes[i + 1].set_title(f"Relacionado: {correlated_time_utc.datetime.strftime('%Y-%m-%d %H:%M:%S')}")
     axes[i + 1].set_ylabel("Amplitud")
 
 # Ajustar ejes y etiquetas
@@ -121,7 +121,7 @@ axes[-1].set_xlabel("Tiempo relativo (s)")
 plt.tight_layout()
 
 # Guardar la figura como imagen PNG
-plt.savefig("top_detecciones_28.07_desplazadas.png", format='png', dpi=300)
+plt.savefig("top_detecciones_28.07.png", format='png', dpi=300)
 
 # Mostrar la figura
 plt.show()
