@@ -1,2 +1,0 @@
-CUDA 12.6.2 loaded
-Hello World

@@ -8,6 +8,7 @@ signal = data[0].data
 stats = data[0].stats
 sampling_rate = stats.sampling_rate
 index = np.load('index_pearson.npy')
+profile = np.load('profile_pearson.npy')
 
 # Señales principales definidas en el código original
 signals = [
@@ -34,6 +35,7 @@ for i, signal_time in enumerate(signals):
 
     # Buscar las señales relacionadas
     related_times = []
+    related_profiles = []  # Para almacenar los valores de profile correspondientes
     for idx in related_indices:
         most_correlated_idx = index[idx]  # Índice más correlacionado
         if most_correlated_idx > 0:  # Índice válido
@@ -43,9 +45,11 @@ for i, signal_time in enumerate(signals):
             # Verificar la diferencia temporal mínima
             if all(abs((correlated_time - t)) >= min_time_diff for t in related_times):
                 related_times.append(correlated_time)
+                related_profiles.append(profile[most_correlated_idx])  # Guardar valor de profile
 
-    # Ordenar los tiempos relacionados
-    related_times = sorted(related_times)
+    # Ordenar los tiempos relacionados y sus perfiles
+    sorted_related = sorted(zip(related_times, related_profiles), key=lambda x: x[0])
+    related_times, related_profiles = zip(*sorted_related) if sorted_related else ([], [])
 
     # Crear figura para la señal principal y sus relacionadas
     num_plots = len(related_times) + 1  # Uno para la muestra original + cada secuencia relacionada
@@ -57,17 +61,19 @@ for i, signal_time in enumerate(signals):
     signal_segment = signal[start_index:end_index]
     time_axis = np.linspace(-5, 15, len(signal_segment))  # Tiempo relativo (5 s antes, 15 s después)
     axes[0].plot(time_axis, signal_segment, color='black', linewidth=0.8)
-    axes[0].set_title(f"Señal principal: {signal_time}")
+    axes[0].set_title(f"Señal principal: {signal_time.strftime('%Y-%m-%d %H:%M:%S')}")
     axes[0].set_ylabel("Amplitud")
     axes[0].grid(False)  # Sin cuadrícula
 
     # Graficar las señales relacionadas (en azul)
-    for j, related_time in enumerate(related_times):
+    for j, (related_time, related_profile) in enumerate(zip(related_times, related_profiles)):
         start_idx_related = int((related_time - 5 - stats.starttime) * sampling_rate)
         end_idx_related = int((related_time + 15 - stats.starttime) * sampling_rate)
         related_segment = signal[start_idx_related:end_idx_related]
         axes[j + 1].plot(time_axis, related_segment, color='blue', linewidth=0.8)
-        axes[j + 1].set_title(f"Señal relacionada: {related_time}")
+        axes[j + 1].set_title(
+            f"Señal relacionada: {related_time.strftime('%Y-%m-%d %H:%M:%S')} (Correlación: {related_profile:.3f})"
+        )
         axes[j + 1].set_ylabel("Amplitud")
         axes[j + 1].grid(False)  # Sin cuadrícula
 

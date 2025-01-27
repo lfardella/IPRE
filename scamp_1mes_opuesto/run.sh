@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Nombre del trabajo
-#SBATCH --job-name=test_pyscamp.py
+#SBATCH --job-name=opuesto_pyscamp
 # Archivo de salida
 #SBATCH --output=salida.txt
 # Partición CPUS
@@ -19,4 +19,4 @@
 eval "$(conda shell.bash hook)"
 conda activate scamp_env
 
-python SCAMP_1day.py
+python scamp_1mes_opuesto.py
