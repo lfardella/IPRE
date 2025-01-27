@@ -73,10 +73,9 @@ for i, t in enumerate(times):
 
     # Graficar la señal original
     time_axis = np.linspace(-5, 15, len(original_signal))  # Eje temporal en segundos relativo al inicio
-    axes[i][0].plot(time_axis, original_signal, label="Señal Original", color="black")
+    axes[i][0].plot(time_axis, original_signal, color="black")
     axes[i][0].set_title(f"Señal principal: {t.strftime('%Y-%m-%d %H:%M:%S')}")
     axes[i][0].set_xlabel("Tiempo relativo (s)")
-    axes[i][0].legend()
 
     # Graficar señales correlacionadas si existen
     if grouped_signals:
@@ -86,7 +85,9 @@ for i, t in enumerate(times):
             detected_signal = signal.data[corr_start:corr_end]
 
             detected_time_axis = np.linspace(-5, 15, len(detected_signal))  # Tiempo relativo
-            axes[i][1].plot(detected_time_axis, detected_signal, label=f"Corr: {corr_value:.2f}", color="blue")
+            axes[i][1].plot(
+                detected_time_axis, detected_signal, color="blue"
+            )
             axes[i][1].set_title(
                 f"Señal relacionada: {corr_time.strftime('%Y-%m-%d %H:%M:%S')} (Correlación: {corr_value:.2f})"
             )
@@ -99,8 +100,10 @@ for i, t in enumerate(times):
         axes[i][1].set_title("Sin señales relacionadas")
 
     axes[i][1].set_xlabel("Tiempo relativo (s)")
-    axes[i][1].legend()
 
 # Ajustar diseño
 plt.tight_layout()
-plt.show()
+
+# Guardar como archivo PNG
+plt.savefig("repeating.png", dpi=300)
+plt.close(fig)
