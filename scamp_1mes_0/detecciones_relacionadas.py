@@ -13,13 +13,27 @@ profile = np.load('profile_pearson.npy')
 # Señales principales definidas en el código original
 signals = [
     UTCDateTime(2017, 7, 23, 12, 47, 57),
-    UTCDateTime(2017, 7, 24, 0, 46, 17),
+    UTCDateTime(2017, 7, 24, 0, 46, 32),
+    UTCDateTime(2017, 7, 24, 0, 52, 22),
     UTCDateTime(2017, 7, 26, 5, 40, 5),
     UTCDateTime(2017, 7, 26, 6, 52, 26),
     UTCDateTime(2017, 7, 26, 6, 57, 58),
-    UTCDateTime(2017, 7, 26, 7, 23, 56),
-    UTCDateTime(2017, 7, 28, 6, 7, 18),
-    UTCDateTime(2017, 7, 28, 6, 46, 20),
+    UTCDateTime(2017, 7, 26, 7, 24, 12),
+    UTCDateTime(2017, 7, 28, 6, 7, 17),
+    UTCDateTime(2017, 7, 28, 6, 46, 36),
+]
+
+# Desplazamientos en segundos
+time_offsets = [
+    [8.01, 6.29],
+    [6.61, 6.06, 8.06, 7.13],
+    [6.88, 8],
+    [5.88, 6.54, 7.95, 8.03],
+    [8.03, -0.49],
+    [-3.77, 6.33, 8.02],
+    [8],
+    [8.06],
+    [8.05]
 ]
 
 # Rango de revisión para encontrar señales relacionadas
@@ -70,8 +84,9 @@ for i, signal_time in enumerate(signals):
 
     # Graficar las señales relacionadas (en azul)
     for j, (related_time, related_profile) in enumerate(zip(related_times, related_profiles)):
-        start_idx_related = int((related_time - 5 - stats.starttime) * sampling_rate)
-        end_idx_related = int((related_time + 15 - stats.starttime) * sampling_rate)
+        offset = time_offsets[i][j]
+        start_idx_related = int((related_time + offset - 5 - stats.starttime) * sampling_rate)
+        end_idx_related = int((related_time + offset + 15 - stats.starttime) * sampling_rate)
         related_segment = signal[start_idx_related:end_idx_related]
         axes[j + 1].plot(time_axis, related_segment, color='blue', linewidth=0.8)
         axes[j + 1].set_title(
@@ -84,11 +99,11 @@ for i, signal_time in enumerate(signals):
     axes[-1].set_xlabel("Tiempo relativo (s)")
     plt.tight_layout()
 
-    # Mostrar la figura
-    plt.show()
-
     # Guardar la figura como imagen PNG
     plt.savefig(f"señal_principal_{i + 1}_y_relacionadas.png", dpi=300, bbox_inches='tight')
+
+    plt.show()
+
     plt.close(fig)
 
 print("Figuras generadas y guardadas correctamente.")
