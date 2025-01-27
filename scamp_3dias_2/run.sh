@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Nombre del trabajo
-#SBATCH --job-name=opuesto_pyscamp
+#SBATCH --job-name=3dias
 # Archivo de salida
 #SBATCH --output=salida.txt
 # Partición CPUS
