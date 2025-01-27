@@ -13,12 +13,13 @@ profile = np.load('profile_pearson.npy')
 # Señales principales definidas en el código original
 signals = [
     UTCDateTime(2017, 7, 23, 12, 47, 57),
-    UTCDateTime(2017, 7, 24, 0, 46, 25),
+    UTCDateTime(2017, 7, 24, 0, 46, 17),
     UTCDateTime(2017, 7, 26, 5, 40, 5),
     UTCDateTime(2017, 7, 26, 6, 52, 26),
     UTCDateTime(2017, 7, 26, 6, 57, 58),
+    UTCDateTime(2017, 7, 26, 7, 23, 56),
     UTCDateTime(2017, 7, 28, 6, 7, 18),
-    UTCDateTime(2017, 7, 28, 6, 46, 28),
+    UTCDateTime(2017, 7, 28, 6, 46, 20),
 ]
 
 # Rango de revisión para encontrar señales relacionadas
@@ -61,7 +62,7 @@ for i, signal_time in enumerate(signals):
     start_index = int((signal_time - 5 - stats.starttime) * sampling_rate)
     end_index = int((signal_time + 15 - stats.starttime) * sampling_rate)
     signal_segment = signal[start_index:end_index]
-    time_axis = np.linspace(-5, 15, len(signal_segment))  # Tiempo relativo (5 s antes, 15 s después)
+    time_axis = np.linspace(0, 20, len(signal_segment))  # Tiempo relativo (5 s antes, 15 s después)
     axes[0].plot(time_axis, signal_segment, color='black', linewidth=0.8)
     axes[0].set_title(f"Señal principal: {signal_time.strftime('%Y-%m-%d %H:%M:%S')}")
     axes[0].set_ylabel("Amplitud")
@@ -82,6 +83,9 @@ for i, signal_time in enumerate(signals):
     # Ajustar el diseño
     axes[-1].set_xlabel("Tiempo relativo (s)")
     plt.tight_layout()
+
+    # Mostrar la figura
+    plt.show()
 
     # Guardar la figura como imagen PNG
     plt.savefig(f"señal_principal_{i + 1}_y_relacionadas.png", dpi=300, bbox_inches='tight')
