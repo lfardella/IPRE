@@ -52,7 +52,7 @@ for i, t in enumerate(times):
     high_corr_indices = np.where(profile[window_start:window_end] >= 0.95)[0]
     high_corr_indices += window_start  # Ajustar los índices al rango original
 
-    # Agrupar señales correlacionadas
+    # Agrupar señales correlacionadas, pero evitar señales cercanas a la principal
     grouped_signals = []
     current_group = []
 
@@ -60,19 +60,21 @@ for i, t in enumerate(times):
         corr_time = signal.stats.starttime + idx / SR
         corr_value = profile[idx]
 
-        if not current_group or (corr_time - current_group[-1][0]) <= time_tolerance:
-            current_group.append((corr_time, corr_value, idx))  # (tiempo, correlación, índice)
-        else:
-            best_signal = max(current_group, key=lambda x: x[1])
-            grouped_signals.append(best_signal)
-            current_group = [(corr_time, corr_value, idx)]
+        # Verificar si la señal está demasiado cerca de la señal principal
+        if abs(idx - start_index) > 15 * SR:  # No considerar señales dentro de ±15 segundos de la principal
+            if not current_group or (corr_time - current_group[-1][0]) <= time_tolerance:
+                current_group.append((corr_time, corr_value, idx))  # (tiempo, correlación, índice)
+            else:
+                best_signal = max(current_group, key=lambda x: x[1])
+                grouped_signals.append(best_signal)
+                current_group = [(corr_time, corr_value, idx)]
     
     if current_group:
         best_signal = max(current_group, key=lambda x: x[1])
         grouped_signals.append(best_signal)
 
     # Graficar la señal original
-    time_axis = np.linspace(-5, 15, len(original_signal))  # Eje temporal en segundos relativo al inicio
+    time_axis = np.linspace(0, 20, len(original_signal))  # Eje temporal en segundos relativo al inicio
     axes[i][0].plot(time_axis, original_signal, color="black")
     axes[i][0].set_title(f"Señal principal: {t.strftime('%Y-%m-%d %H:%M:%S')}")
     axes[i][0].set_xlabel("Tiempo relativo (s)")
@@ -84,7 +86,7 @@ for i, t in enumerate(times):
             corr_end = min(len(signal.data), corr_idx + post_window)
             detected_signal = signal.data[corr_start:corr_end]
 
-            detected_time_axis = np.linspace(-5, 15, len(detected_signal))  # Tiempo relativo
+            detected_time_axis = np.linspace(0, 20, len(detected_signal))  # Tiempo relativo
             axes[i][1].plot(
                 detected_time_axis, detected_signal, color="blue"
             )
