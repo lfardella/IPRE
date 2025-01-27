@@ -13,10 +13,12 @@ profile = np.load('profile_pearson.npy')
 # Señales principales definidas en el código original
 signals = [
     UTCDateTime(2017, 7, 23, 12, 47, 57),
+    UTCDateTime(2017, 7, 24, 0, 46, 25),
     UTCDateTime(2017, 7, 26, 5, 40, 5),
     UTCDateTime(2017, 7, 26, 6, 52, 26),
     UTCDateTime(2017, 7, 26, 6, 57, 58),
     UTCDateTime(2017, 7, 28, 6, 7, 18),
+    UTCDateTime(2017, 7, 28, 6, 46, 28),
 ]
 
 # Rango de revisión para encontrar señales relacionadas
@@ -72,7 +74,7 @@ for i, signal_time in enumerate(signals):
         related_segment = signal[start_idx_related:end_idx_related]
         axes[j + 1].plot(time_axis, related_segment, color='blue', linewidth=0.8)
         axes[j + 1].set_title(
-            f"Señal relacionada: {related_time.strftime('%Y-%m-%d %H:%M:%S')} (Correlación: {related_profile:.3f})"
+            f"Señal relacionada: {related_time.strftime('%Y-%m-%d %H:%M:%S')} (Correlación: {related_profile:.2f})"
         )
         axes[j + 1].set_ylabel("Amplitud")
         axes[j + 1].grid(False)  # Sin cuadrícula

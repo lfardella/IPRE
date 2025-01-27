@@ -10,7 +10,7 @@
 ##SBATCH --partition=gpus
 # Solicitud de cpus
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=32
+#SBATCH --cpus-per-task=16
 # Solicitud de GPUS
 ##SBATCH --gres=gpu:1
 #SBATCH --mail-user=lfardella@uc.cl
@@ -19,4 +19,4 @@
 eval "$(conda shell.bash hook)"
 conda activate scamp_env
 
-python scamp_1mes_opuesto.py
+python scamp_3dias_2.py

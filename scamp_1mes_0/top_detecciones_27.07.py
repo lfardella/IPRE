@@ -16,6 +16,7 @@ start_datetime = start_time.datetime
 
 # Cargar los índices de correlación
 index = np.load('index_pearson.npy')
+profile = np.load('profile_pearson.npy')
 cc_suma = np.load('cc_suma.npy')
 
 # Agrupar índices por día y seleccionar el índice con más detecciones de cada día
@@ -43,6 +44,7 @@ related_indices = np.arange(start_range, end_range)                 # Incluir to
 
 # Buscar las secuencias más correlacionadas para cada índice
 related_times = []  # Cambiamos a lista para verificar la diferencia temporal
+related_profiles = []
 min_time_diff = 20  # Diferencia mínima en segundos
 
 for idx in related_indices:
@@ -54,9 +56,11 @@ for idx in related_indices:
         # Verificar si cumple con la diferencia mínima respecto a los tiempos ya guardados
         if all(abs((correlated_time - t).total_seconds()) >= min_time_diff for t in related_times):
             related_times.append(correlated_time)  # Agregar tiempo si cumple la condición
+            related_profiles.append(profile[most_correlated_idx])
 
-# Ordenar los tiempos para graficarlos en secuencia
-related_times = sorted(related_times)
+# Ordenar los tiempos y perfiles relacionados
+sorted_related = sorted(zip(related_times, related_profiles), key=lambda x: x[0])
+related_times, related_profiles = zip(*sorted_related) if sorted_related else ([], [])
 
 # Configuración del rango de tiempo para los gráficos (5 segundos antes y 15 segundos después)
 pre_duration = 5                                    # segundos antes
@@ -66,7 +70,7 @@ segment_samples = int(segment_duration * sampling_rate)
 pre_samples = int(pre_duration * sampling_rate)
 
 # Desplazamientos en segundos para las detecciones relacionadas
-time_offsets = [6.215, 7.217, 7.47, 8.026, -6.679]  # Ejemplo: tiempo de desplazamiento para las primeras detecciones
+time_offsets = [6.215, 7.217, 7.47, 8.026, -6.679]
 
 # Crear la figura y los subgráficos
 num_subplots = len(related_times) + 1  # Uno para la muestra original + cada secuencia relacionada
@@ -86,11 +90,12 @@ main_signal = signal[main_start_sample:main_end_sample]
 relative_time = np.linspace(0, segment_duration, len(main_signal))  # Tiempo relativo para el eje x
 
 axes[0].plot(relative_time, main_signal, color='black', linewidth=0.8)
-axes[0].set_title(f"Muestra original: {start_datetime + timedelta(seconds=main_start_sample / sampling_rate)}")
+original_time_str = (start_datetime + timedelta(seconds=main_start_sample / sampling_rate)).strftime('%Y-%m-%d %H:%M:%S')
+axes[0].set_title(f"Muestra original: {original_time_str}")
 axes[0].set_ylabel("Amplitud")
 
 # Graficar las secuencias relacionadas con desplazamiento de tiempo
-for i, correlated_time in enumerate(related_times):
+for i, (correlated_time, correlation) in enumerate(zip(related_times, related_profiles)):
     # Convertir tiempo relacionado a UTCDateTime
     correlated_time_utc = UTCDateTime(correlated_time)
     
@@ -117,7 +122,8 @@ for i, correlated_time in enumerate(related_times):
     
     # Graficar
     axes[i + 1].plot(relative_time, segment_signal, color='blue', linewidth=0.8)
-    axes[i + 1].set_title(f"Relacionado: {correlated_time_utc.datetime.strftime('%Y-%m-%d %H:%M:%S')}")
+    time_str = correlated_time.strftime('%Y-%m-%d %H:%M:%S')
+    axes[i + 1].set_title(f"Señal relacionada: {time_str} (Correlación: {correlation:.2f})")
     axes[i + 1].set_ylabel("Amplitud")
 
 # Ajustar ejes y etiquetas

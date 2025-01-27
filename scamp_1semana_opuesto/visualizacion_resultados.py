@@ -4,7 +4,7 @@ from obspy import read
 from datetime import datetime, timedelta
 
 # Leer los datos originales y los resultados generados
-data = read('../../Datos/C1.MT12.HH*.2017.207-209.mseed')
+data = read('../../Datos/C1.MT12.HH*.2017.204-210.mseed')
 signal = data[0].data
 stats = data[0].stats
 sampling_rate = stats.sampling_rate
@@ -13,7 +13,7 @@ sampling_rate = stats.sampling_rate
 profile = np.load('profile_pearson.npy')
 index = np.load('index_pearson.npy')
 
-# Crear un eje de tiempo en días (considerando la duración real: 3 días)
+# Crear un eje de tiempo en días (considerando la duración real: 7 días)
 time_signal = np.arange(0, len(signal)) / sampling_rate / 3600 / 24  # Señal completa en días
 time_profile = np.arange(0, len(profile)) / sampling_rate / 3600 / 24  # Perfiles e índices en días
 
@@ -27,9 +27,9 @@ filtered_time_indices = filtered_indices / sampling_rate / 3600 / 24  # Converti
 print(f"Detecciones con perfil > 0.8: {len(filtered_time_profile)}")
 
 # Extraer la fecha inicial y final del archivo
-start_year, start_day_of_year = 2017, 207
+start_year, start_day_of_year = 2017, 204
 start_date = datetime(start_year, 1, 1) + timedelta(days=start_day_of_year - 1)
-end_date = start_date + timedelta(days=3 - 1)  # 3 días en total
+end_date = start_date + timedelta(days=7 - 1)  # 7 días en total
 date_range_str = f"{start_date.strftime('%d/%m/%Y')} - {end_date.strftime('%d/%m/%Y')}"
 
 # Crear el gráfico con tres paneles
@@ -51,7 +51,7 @@ axes[1].legend()
 axes[2].scatter(filtered_time_profile, filtered_time_indices, color='teal', s=10, alpha=0.7)
 axes[2].set_title("Índice de Matrix Profile", fontsize=12)
 axes[2].set_ylabel("Tiempo (días)")
-axes[2].set_ylim(0, 3)  # Ajustar límites del eje Y para 3 días
+axes[2].set_ylim(0, 7)  # Ajustar límites del eje Y para 7 días
 axes[2].set_xlabel("Tiempo (días)")
 
 # Ajustes de diseño
